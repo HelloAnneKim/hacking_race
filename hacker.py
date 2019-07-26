@@ -106,7 +106,7 @@ def score(data, labels, ids, test_sample):
         _id = ids[i]
         if label not in result:
             result[label] = []
-        result[label].append(distance(snps, test_sample), snps, _id)
+        result[label].append((distance(snps, test_sample), snps, _id))
     return result
 
 
