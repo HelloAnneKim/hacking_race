@@ -16,7 +16,7 @@ def gtm_classification(config, predict_data):
     prediction = ugtm.advancedGTC(
         train=predict_data.filtered_data,
         labels=predict_data.filtered_labels,
-        test=predit_data.test_data,
+        test=predict_data.test_data,
         doPCA=config.pca_preprocess,
         n_components=config.pca_n_components,
         n_neighbors=config.n_neighbors,
@@ -62,22 +62,5 @@ def gtm_classification(config, predict_data):
 
 
 def predict(config, classify_id):
-    data = config.data
-    labels = config.labels
-    ids = config.ids
-    sample_index = None
-    for i in xrange(len(ids)):
-        if ids[i] == classify_id:
-            sample_index = i
-    if not sample_index:
-        print("Unable to find: " + str(classify_id) + " in dataset")
-        exit
-    test_data = np.array(data[sample_index]).reshape(1, -1)
-    filtered_data = np.delete(data, sample_index, axis=0)
-    filtered_labels = np.delete(labels, sample_index, axis=0)
-    filtered_ids = np.delete(ids, sample_index, axis=0)
-    test_ids = np.array([classify_id]).reshape(1, -1)
-    predict_data = util.Predict_data(
-        test_data, test_ids, filtered_data, filtered_labels, filtered_ids
-    )
+    predict_data = util.extract_sample(config, classify_id)
     gtm_classification(config, predict_data)

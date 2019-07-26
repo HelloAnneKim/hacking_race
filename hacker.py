@@ -5,7 +5,7 @@ import argparse
 import sklearn
 import sklearn.datasets
 import matplotlib.pyplot as plt
-from scipy.spatial import distance
+from scipy.spatial import distance as sc_disctance
 from sklearn import manifold
 import math
 import gtm_config
@@ -95,12 +95,12 @@ if args.classify_id and not (args.manipulate_towards):
 
 
 def distance(point1, point2):
-    return distance.euclidean(point1, point2)
+    return sc_distance.euclidean(point1, point2)
 
 
 def score(data, labels, ids, test_sample):
     result = {}
-    for i in data:
+    for i in xrange(len(data)):
         snps = data[i]
         label = labels[i]
         _id = ids[i]
@@ -144,10 +144,13 @@ if args.manipulate_towards:
         random_state=config.random_state,
     )
     predict_data = util.extract_sample(pca_data, labels, ids, classify_id)
-    scores = score(predict_data.filtered_data, labels, predict_data.test_data)
+    scores = score(predict_data.filtered_data, labels, ids, predict_data.test_data)
     working_data = []
     working_ids = []
     working_labels = []
+    if target_race not in scores.keys():
+        print("Unable to find target race in labels")
+        exit
     for race in scores.keys():
         scores_and_snps = scores[race]
         pop_size = len(scores_and_snps)
