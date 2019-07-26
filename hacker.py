@@ -5,7 +5,7 @@ import argparse
 import sklearn
 import sklearn.datasets
 import matplotlib.pyplot as plt
-from scipy.spatial import distance as sc_disctance
+from scipy.spatial import distance as sc_distance
 from sklearn import manifold
 import math
 import gtm_config
