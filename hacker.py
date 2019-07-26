@@ -45,6 +45,9 @@ parser.add_argument(
     choices=["GTM", "kGTM", "SVM", "PCA", "t-SNE", "SVMrbf", "compare"],
 )
 parser.add_argument("--output", help="output name", dest="output")
+parser.add_argument(
+    "--manipulate-towards", help="output name", dest="manipulate_towards"
+)
 """
 parser.add_argument('--crossvalidate',
                     help='show best regul (regularization coefficient) '
@@ -77,7 +80,7 @@ if args.model == "PCA":
 type_of_experiment = "visualization"
 
 
-if args.classify_id:
+if args.classify_id and not (args.manipulate_towards):
     classify_id = args.classify_id
     gtm_prediction.predict(config, classify_id)
     exit
@@ -95,9 +98,18 @@ def distance(point1, point2):
     return distance.euclidean(point1, point2)
 
 
-def score(data, test_sample):
-    return {}
-    
+def score(data, labels, ids, test_sample):
+    result = {}
+    for i in data:
+        snps = data[i]
+        label = labels[i]
+        _id = ids[i]
+        if label not in result:
+            result[label] = []
+        result[label].append(distance(snps, test_sample), snps, _id)
+    return result
+
+
 def centroids(pca_data, labels):
     pop_size = {}
     centroids = {}
@@ -115,17 +127,49 @@ def centroids(pca_data, labels):
     return centroids
 
 
-def ordered_samples(pca_data, classify_id):
-    return {}
+import util
 
-if type_of_experiment == "manipulation":
+if args.manipulate_towards:
+    target_race = args.manipulate_towards
     classify_id = args.classify_id
-    print("TO BE IMPLEMENTED")
-    
+    data = config.data
+    labels = config.labels
+    ids = config.ids
+    pca_data = ugtm.pcaPreprocess(
+        data=data,
+        doPCA=True,
+        n_components=config.pca_n_components,
+        missing=config.missing,
+        missing_strategy=config.missing_strategy,
+        random_state=config.random_state,
+    )
+    predict_data = util.extract_sample(pca_data, labels, ids, classify_id)
+    scores = score(predict_data.filtered_data, labels, predict_data.test_data)
+    working_data = []
+    working_ids = []
+    working_labels = []
+    for race in scores.keys():
+        scores_and_snps = scores[race]
+        pop_size = len(scores_and_snps)
+        reverse_flag = not (target_race == race)
+        to_add = sorted(scores_and_snps, key=lambda x: x[0], reverse=reverse_flag)[
+            : pop_size // 10
+        ]
+        for score, snps, _id in to_add:
+            working_data.append(snps)
+            working_ids.append(_id)
+            working_labels.append(race)
 
+    predict_data.filtered_data = np.array(working_data)
+    predict_data.filtered_ids = np.array(working_ids)
+    predict_data.filtered_labels = np.array(working_labels)
+    gtm_prediction.gtm_classification(config, predict_data)
+    exit
+
+"""
 if type_of_experiment == "visualization":
     data = config.data
-    labels = config.lables
+    labels = config.labels
     ids = config.ids
     # set default parameters
     k = int(math.sqrt(5 * math.sqrt(data.shape[0]))) + 2
@@ -280,3 +324,4 @@ else:
         "and (--data and --labels) or --model and --usetest."
     )
     exit
+"""

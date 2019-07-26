@@ -47,9 +47,9 @@ class Json_config:
         self.pointsize = 1.0
         self.alpha = 0.5
         self.svm_gamma = 1.0
-        if self.config_data.get("grid_size") :
+        if self.config_data.get("grid_size"):
             self.grid_size = self.config_data.get("grid_size")
-        else :
+        else:
             self.grid_size = 0
         if self.config_data.get("rbf_grid_size"):
             self.rbf_grid_size = self.config_data.get("rbf_grid_size")

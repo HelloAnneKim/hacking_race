@@ -9,13 +9,14 @@ from sklearn import manifold
 from sklearn.decomposition import PCA
 import math
 import gtm_config
+import util
 
 
-def gtm_classification(config, test_data_matrix, test_id_list, data, labels, data_ids):
+def gtm_classification(config, predict_data):
     prediction = ugtm.advancedGTC(
-        train=data,
-        labels=labels,
-        test=test_data_matrix,
+        train=predict_data.filtered_data,
+        labels=predict_data.filtered_labels,
+        test=predit_data.test_data,
         doPCA=config.pca_preprocess,
         n_components=config.pca_n_components,
         n_neighbors=config.n_neighbors,
@@ -28,13 +29,13 @@ def gtm_classification(config, test_data_matrix, test_id_list, data, labels, dat
         predict_mode=config.predict_mode,
         prior=config.gtm_prior,
         regul=config.regul,
-        s=config.rbf_width_factor
+        s=config.rbf_width_factor,
     )
     prediction["optimizedModel"].plot_html(
-        ids=data_ids,
+        ids=predict_data.filtered_ids,
         plot_arrows=True,
         title="GTM",
-        labels=labels,
+        labels=predict_data.filtered_labels,
         discrete=config.discrete_labels,
         output=config.output + "_trainedMap",
         cname=config.color_map,
@@ -45,9 +46,9 @@ def gtm_classification(config, test_data_matrix, test_id_list, data, labels, dat
     )
     ugtm.printClassPredictions(prediction, output=config.output)
     prediction["optimizedModel"].plot_html_projection(
-        labels=labels,
+        labels=predict_data.filtered_labels,
         projections=prediction["indiv_projections"],
-        ids=test_id_list,
+        ids=predict_data.test_ids,
         plot_arrows=True,
         title="GTM projection",
         discrete=config.discrete_labels,
@@ -59,6 +60,7 @@ def gtm_classification(config, test_data_matrix, test_id_list, data, labels, dat
         do_interpolate=config.interpolate,
     )
 
+
 def predict(config, classify_id):
     data = config.data
     labels = config.labels
@@ -69,12 +71,13 @@ def predict(config, classify_id):
             sample_index = i
     if not sample_index:
         print("Unable to find: " + str(classify_id) + " in dataset")
-        exit 
+        exit
     test_data = np.array(data[sample_index]).reshape(1, -1)
     filtered_data = np.delete(data, sample_index, axis=0)
     filtered_labels = np.delete(labels, sample_index, axis=0)
     filtered_ids = np.delete(ids, sample_index, axis=0)
     test_ids = np.array([classify_id]).reshape(1, -1)
-    gtm_classification(
-        config, test_data, test_ids, filtered_data, filtered_labels, filtered_ids
+    predict_data = util.Predict_data(
+        test_data, test_ids, filtered_data, filtered_labels, filtered_ids
     )
+    gtm_classification(config, predict_data)
