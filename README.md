@@ -18,14 +18,15 @@ In this example, we're running a prediction on sample HG01108, a Puerto Rican fe
 
 http://www.internationalgenome.org/data-portal/sample/HG01108
 
-`python2  hacker.py  --model PCA --data recoded_1000G.noadmixed.mat --labels recoded_1000G.raw.noadmixed.lbls3 --labeltype discrete --out classify_HG01108 --pca --n_components 10 --regularization 0.1 --rbf_width_factor 0.3 --missing --missing_strategy median --random_state 8 --ids recoded_1000G.raw.noadmixed.ids --classify-id HG01108`
+`python2  hacker.py  --model GTM  --out classify_HG01108 --config ./standard_config.json  --classify-id HG01108`
 
 ### Step 2: Hack 3:D
 For the ancestry hack, we will now shift her ancestry towards Kenyan using
 
 `python2 hacker.py --model GTM --out kenya_dig_it --classify-id HG01108 --config ./standard_config.json --manipulate-towards "Luhya_in_Webuye,_Kenya"`
 
-### Step 3: YAY
+### Step 3: Check your work
+* Now you should be able to check the output and cluster graphs :)
 
 
 
