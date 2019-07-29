@@ -13,6 +13,10 @@ problems with "ancestry reports"
 
 `./download_viz.sh`
 
+### Step 0.5: Install dependencies
+Either make a virtual environment or install the dependencies to your system: 
+` pip install -r requirements.txt`
+
 ### Step 1: Run ancestry prediction and clustering
 In this example, we're running a prediction on sample HG01108, a Puerto Rican female
 
