@@ -62,5 +62,7 @@ def gtm_classification(config, predict_data):
 
 
 def predict(config, classify_id):
-    predict_data = util.extract_sample(config, classify_id)
+    predict_data = util.extract_sample(
+        config.data, config.labels, config.ids, classify_id
+    )
     gtm_classification(config, predict_data)
