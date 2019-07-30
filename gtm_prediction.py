@@ -44,6 +44,10 @@ def gtm_classification(config, predict_data):
         prior=config.gtm_prior,
         do_interpolate=config.interpolate,
     )
+    # Working on adding labels to the output
+    print("I want to add labels to prediction[optimizedModel].plot_html_projection(")
+    print(predict_data.filtered_labels)
+
     ugtm.printClassPredictions(prediction, output=config.output)
     prediction["optimizedModel"].plot_html_projection(
         labels=predict_data.filtered_labels,
