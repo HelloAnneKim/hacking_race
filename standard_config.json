@@ -1,6 +1,5 @@
 {
     "data_file": "~/viz-data/recoded_1000G.noadmixed.mat",
     "id_file": "~/viz-data/recoded_1000G.raw.noadmixed.ids",
-    "label_file": "~/viz-data/recoded_1000G.raw.noadmixed.lbls3",
-    "missing_data_present" : true
+    "label_file": "~/viz-data/recoded_1000G.raw.noadmixed.lbls3"
 }

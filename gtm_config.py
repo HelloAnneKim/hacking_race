@@ -23,7 +23,7 @@ class Json_config:
         else:
             print("Discrete labels")
             self.labels = np.genfromtxt(label_path, delimiter="\t", dtype=str)
-        self.pca_preprocess = bool(self.config_data.get("pca_preprocess"))
+        self.pca_preprocess = True
         self.missing = True
         self.missing_strategy = "median"
         if self.config_data.get("missing_data_strategy"):
@@ -58,6 +58,9 @@ class Json_config:
         self.n_neighbors = 1
         self.random_state = 8
         self.representation = "modes"
-        self.color_map = "Spectral_r"
+        self.color_map = "gist_rainbow_r"
         self.admixtures = 3
         self.interpolate = False
+        self.classify_color = "gist_rainbow_r"
+        self.adversarial_sample_color = "Pastel1_r"
+        self.verbose = False
