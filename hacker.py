@@ -129,6 +129,43 @@ def centroids(pca_data, labels):
 
 import util
 
+
+def plot_gtm(config, pca_data, labels, ids):
+    k = int(math.sqrt(5 * math.sqrt(pca_data.shape[0]))) + 2
+    m = int(math.sqrt(k))
+    s = 0.3
+    regul = 0.1
+    niter = 1000
+    gtm = ugtm.runGTM(
+        data=pca_data,
+        k=k,
+        m=m,
+        s=s,
+        regul=regul,
+        niter=niter,
+        doPCA=False,
+        n_components=config.pca_n_components,
+        missing=config.missing,
+        missing_strategy=config.missing_strategy,
+        random_state=config.random_state,
+        verbose=config.verbose,
+    )
+
+    gtm.plot_html(
+        labels=labels,
+        ids=ids,
+        discrete=config.discrete_labels,
+        output=config.output + "_control_plot",
+        cname=config.color_map,
+        pointsize=config.pointsize,
+        alpha=config.alpha,
+        title="Control Graph (All Samples)",
+        prior=config.gtm_prior,
+        do_interpolate=config.interpolate,
+    )
+    return None
+
+
 if args.manipulate_towards:
     target_race = args.manipulate_towards
     classify_id = args.classify_id
@@ -148,6 +185,9 @@ if args.manipulate_towards:
     working_data = []
     working_ids = []
     working_labels = []
+    control_data = []
+    control_ids = []
+    control_labels = []
     if target_race not in scores.keys():
         print("Unable to find target race in labels")
         exit
@@ -155,17 +195,33 @@ if args.manipulate_towards:
         scores_and_snps = scores[race]
         pop_size = len(scores_and_snps)
         reverse_flag = not (target_race == race)
-        to_add = sorted(scores_and_snps, key=lambda x: x[0], reverse=reverse_flag)[
-            : pop_size // 10
-        ]
-        for score, snps, _id in to_add:
+        scored = sorted(scores_and_snps, key=lambda x: x[0], reverse=reverse_flag)
+        for score, snps, _id in scored[: pop_size // 10]:
             working_data.append(snps)
+            control_data.append(snps)
             working_ids.append(_id)
+            control_ids.append(_id)
             working_labels.append(race)
-
-    predict_data.filtered_data = np.array(working_data)
+            control_labels.append(race)
+        for score, snps, _id in scored[pop_size // 10 :]:
+            control_data.append(snps)
+            control_ids.append(_id)
+            control_labels.append(race + ":NOT-CHOSEN")
+    control_data.append(predict_data.test_data[0])
+    control_ids.append(classify_id)
+    control_labels.append("TARGET")
+    control_data = np.array(control_data)
+    control_ids = np.array(control_ids)
+    control_labels = np.array(control_labels)
+    plot_gtm(config, control_data, control_ids, control_labels)
+    control_data = None
+    control_ids = None
+    control_labels = None
+    filtered_data = np.array(working_data)
+    predict_data.filtered_data = filtered_data
     predict_data.filtered_ids = np.array(working_ids)
     predict_data.filtered_labels = np.array(working_labels)
+    config.pca_preprocess = False
     gtm_prediction.gtm_classification(config, predict_data)
     exit
 

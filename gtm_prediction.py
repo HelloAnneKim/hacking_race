@@ -13,6 +13,10 @@ import util
 
 
 def gtm_classification(config, predict_data):
+    print(np.size(predict_data.filtered_data))
+    print(np.size(predict_data.filtered_labels))
+    print(config.pca_preprocess)
+
     prediction = ugtm.advancedGTC(
         train=predict_data.filtered_data,
         labels=predict_data.filtered_labels,
@@ -29,7 +33,7 @@ def gtm_classification(config, predict_data):
         predict_mode=config.predict_mode,
         prior=config.gtm_prior,
         regul=config.regul,
-        s=config.rbf_width_factor,
+        s=config.rbf_width_factor
     )
     prediction["optimizedModel"].plot_html(
         ids=predict_data.filtered_ids,
@@ -42,7 +46,7 @@ def gtm_classification(config, predict_data):
         pointsize=config.pointsize,
         alpha=config.alpha,
         prior=config.gtm_prior,
-        do_interpolate=config.interpolate,
+        do_interpolate=config.interpolate
     )
     ugtm.printClassPredictions(prediction, output=config.output)
     prediction["optimizedModel"].plot_html_projection(
@@ -52,12 +56,12 @@ def gtm_classification(config, predict_data):
         plot_arrows=True,
         title="GTM projection",
         discrete=config.discrete_labels,
-        cname=config.color_map,
+        cname=config.classify_color,
         pointsize=config.pointsize,
         output=config.output,
         alpha=config.alpha,
         prior=config.gtm_prior,
-        do_interpolate=config.interpolate,
+        do_interpolate=config.interpolate
     )
 
 
