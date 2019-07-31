@@ -131,16 +131,13 @@ import util
 
 
 def plot_gtm(config, pca_data, labels, ids):
-    k = int(math.sqrt(5 * math.sqrt(pca_data.shape[0]))) + 2
-    m = int(math.sqrt(k))
-    s = 0.3
     regul = 0.1
     niter = 1000
     gtm = ugtm.runGTM(
         data=pca_data,
-        k=k,
-        m=m,
-        s=s,
+        k=config.k,
+        m=config.m,
+        s=config.rbf_width_factor,
         regul=regul,
         niter=niter,
         doPCA=False,
@@ -180,6 +177,8 @@ if args.manipulate_towards:
         missing_strategy=config.missing_strategy,
         random_state=config.random_state,
     )
+    config.k = int(math.sqrt(5 * math.sqrt(pca_data.shape[0]))) + 2
+    config.m = int(math.sqrt(config.k))
     predict_data = util.extract_sample(pca_data, labels, ids, classify_id)
     scores = score(predict_data.filtered_data, labels, ids, predict_data.test_data)
     working_data = []
