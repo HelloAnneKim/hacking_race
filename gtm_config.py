@@ -39,7 +39,7 @@ class Json_config:
             self.gtm_prior = self.config_data.get("gtm_prior")
         self.pca_n_components = 10
         if self.config_data.get("pca_n_components"):
-            self.gtm_prior = self.config_data.get("pca_n_components")
+            self.pca_n_components = self.config_data.get("pca_n_components")
         self.regul = 0.1
         self.rbf_width_factor = 0.3
         self.svm_margin = 1.0
