@@ -9,7 +9,7 @@ problems with "ancestry reports"
 * The respository is based on modified code from https://github.com/hagax8/ancestry_viz 
 
 ### CLONE THIS REPO 
-`git clone https://github.com/herroannekim/hacking_race.git`
+`$ git clone https://github.com/herroannekim/hacking_race.git`
 
 ### Step 0 (Optional): Make a virtual environment 
 This part is optional but encouraged because we're about to download files and stuff that might mess up existing dependencies you have in your dev environment.  We'll be following the instructions from: https://docs.python-guide.org/dev/virtualenvs/
@@ -25,7 +25,7 @@ This part is optional but encouraged because we're about to download files and s
 `$ source venv/bin/activate`
 
 ### Step 1: Download the Data
-`chmod +x download_viz.sh`
+`$ chmod +x download_viz.sh`
 
 `$ ./download_viz.sh`
 
