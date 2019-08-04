@@ -64,3 +64,5 @@ class Json_config:
         self.classify_color = "gist_rainbow_r"
         self.adversarial_sample_color = "Pastel1_r"
         self.verbose = False
+        self.k = 0
+        self.m = 0
