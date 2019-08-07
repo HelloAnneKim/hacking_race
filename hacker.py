@@ -164,7 +164,7 @@ def plot_gtm(config, pca_data, labels, ids):
 
 
 if args.manipulate_towards:
-    target_race = args.manipulate_towards
+    target_group = args.manipulate_towards
     classify_id = args.classify_id
     data = config.data
     labels = config.labels
@@ -187,25 +187,25 @@ if args.manipulate_towards:
     control_data = []
     control_ids = []
     control_labels = []
-    if target_race not in scores.keys():
-        print("Unable to find target race in labels")
+    if target_group not in scores.keys():
+        print("Unable to find target group in labels")
         exit
-    for race in scores.keys():
-        scores_and_snps = scores[race]
+    for group in scores.keys():
+        scores_and_snps = scores[group]
         pop_size = len(scores_and_snps)
-        reverse_flag = not (target_race == race)
+        reverse_flag = not (target_group == group)
         scored = sorted(scores_and_snps, key=lambda x: x[0], reverse=reverse_flag)
         for score, snps, _id in scored[: pop_size // 10]:
             working_data.append(snps)
             control_data.append(snps)
             working_ids.append(_id)
             control_ids.append(_id)
-            working_labels.append(race)
-            control_labels.append(race)
+            working_labels.append(group)
+            control_labels.append(group)
         for score, snps, _id in scored[pop_size // 10 :]:
             control_data.append(snps)
             control_ids.append(_id)
-            control_labels.append(race + ":NOT-CHOSEN")
+            control_labels.append(group + ":NOT-CHOSEN")
     control_data.append(predict_data.test_data[0])
     control_ids.append(classify_id)
     control_labels.append("TARGET")
